@@ -1,0 +1,121 @@
+body{
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #00763a;
+    
+}
+#game{
+    display:grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto;
+    background-image: url('../images/bj.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 1200px;
+    height: 700px;
+    border: 1px solid black;
+    margin-top: 20px;
+}
+#controls{
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    width: 1200px;
+    height: 100px;
+    
+}
+#controls button{
+    font-size: 50px;
+    background-color: rgba(255, 255, 0, 0.795);
+    margin: 20px;
+    transition: all 1s ease;
+
+}
+#hit{
+    display: none;
+    opacity: 0;
+}
+#play{
+    display: block;
+    width: 400px;
+    justify-self: center;
+    opacity: 1;
+    transition: all 2s ease;
+}
+#stay{
+    display: none;
+    opacity: 0;
+}
+#controls button:hover{
+    font-size: 50px;
+    background-color: yellow;
+    margin: 20px;
+}
+
+#PlayerCardContainer,
+#DealerCardContainer{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    transition: all 2s ease;
+    margin-left: 50px;
+}
+.playerCard{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position:relative;
+    height: 192px;
+    width: 135px;
+    background-image: url('../images/backs/blue.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    top: 0;
+    right: 0;
+    align-self: flex-end;
+    margin-left: 0;
+    margin-bottom: 40px;
+    transition: all 1.5s ease;
+    overflow:hidden;
+    
+}
+.playerCard:hover{
+    /* top: -50px;
+    z-index: 1;
+    transform: scale(1.2); */
+    cursor: pointer;
+    transition: all 1s ease;
+    /* right: 20px; */
+    top: -40px;
+    margin-right: 20px;
+    transform: rotateZ(-2deg);
+    box-shadow: rgba(0, 0, 0, 0.84) 0px 4px 15px;
+}
+#PlayerCardContainer:hover .playerCard:not(:hover){
+    margin-right: 20px;
+    transition: all .5s ease;
+}
+.dealerCard{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position: relative;
+    margin-top: 10px;
+    height: 192px;
+    width: 135px;
+    background-image: url('../images/backs/blue.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    top: 0;
+    transition: all 2s ease;
+
+}
+.out{
+    
+    top: -1000px;
+    transition: all 1s ease;
+}
+.margin{
+    margin-left: -80px;
+    
+}
