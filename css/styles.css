@@ -5,10 +5,15 @@ body{
     
 }
 #game{
+    position: relative;
     display:grid;
-    grid-template-rows: auto auto;
+    grid-template-rows: 330px 100px auto;
     grid-template-columns: auto;
     background-image: url('../images/bj.jpg');
+    grid-template-areas: 
+    "dealer"
+    "alerts"
+    "player";
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -16,6 +21,78 @@ body{
     height: 700px;
     border: 1px solid black;
     margin-top: 20px;
+}
+#PlayerCardContainer{
+    grid-area: player;
+}
+#DealerCardContainer{
+    grid-area: dealer;
+}
+#alertsWrapper{
+    display: grid;
+    grid-area: alerts;
+    grid-template-columns: auto 800px auto;
+
+
+}
+#alerts{
+    
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: fit-content;
+    padding: 0 100px 0 100px;
+    margin: 10px;
+    opacity: 0;
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+    background-color: rgba(0, 0, 0, 0.445);
+    border: 3px dashed rgba(255, 166, 0, 0.945);
+    transition: all 0.5s ease;
+}
+#score{
+    
+    width: 200px;
+    height: 80px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    color:white;
+    font-size: 20px;
+}
+#playerScore,
+#dealerScore{
+    position:relative;
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+    border-radius: 3rem;
+    background-color: rgba(0, 0, 0, 0.445);
+    border: 3px dashed rgba(255, 166, 0, 0.945);
+    transition: all 0.5s ease;
+
+}
+
+#dealerScore:before{
+    content: "Dealer";
+    position: absolute;
+    top: 90px;
+    font-size: 20px;
+}
+#playerScore:before{
+    content: "Player";
+    position: absolute;
+    top: 90px;
+    font-size: 20px;
 }
 #controls{
     display: grid;
@@ -30,6 +107,7 @@ body{
     background-color: rgba(255, 255, 0, 0.795);
     margin: 20px;
     transition: all 1s ease;
+    cursor: pointer;
 
 }
 #hit{
@@ -52,7 +130,6 @@ body{
     background-color: yellow;
     margin: 20px;
 }
-
 #PlayerCardContainer,
 #DealerCardContainer{
     height: 100%;
@@ -109,6 +186,10 @@ body{
     top: 0;
     transition: all 2s ease;
 
+}
+
+.block{
+    background-image: url('../images/backs/blue.svg') !important;
 }
 .out{
     

@@ -6,11 +6,20 @@ const stayBtn = document.getElementById('stay');
 const controls = document.getElementById('controls');
 const playerCardCont = document.getElementById('PlayerCardContainer');
 const dealerCardCont = document.getElementById('DealerCardContainer');
+const alerts = document.getElementById('alerts');
+const playerScore = document.getElementById('playerScore');
+const dealerScore = document.getElementById('dealerScore');
 
 var playerTotal = 0;
 var dealerTotal = 0;
+var hiddenCardId = 0;
+var score = {
+    win: 0,
+    lost: 0,
+    draw: 0
+}
 
-const cards =[
+const cards = [
     'clubs_2',
     'clubs_3',
     'clubs_4',
@@ -25,7 +34,7 @@ const cards =[
     'clubs_king',
     'clubs_queen'
 ]
-const values=[
+const values = [
     2,
     3,
     4,
@@ -38,39 +47,74 @@ const values=[
     11,
     10,
     10
-] 
+]
+var activeCards = [];
 
 function getRand(min, max) {
 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function buttonsControl(x){
+function buttonsControl(x) {
 
-    if(x == 'newGame'){
-        
+    if (x == 'newGame') {
+
         controls.style.gridTemplateColumns = "auto auto";
+        playBtn.disabled = true;
         playBtn.style.opacity = '0';
-        playBtn.style.position= 'absolute';
+        playBtn.style.position = 'absolute';
         hitBtn.style.display = 'block';
         stayBtn.style.display = 'block';
     }
-    if(x == "showHitStay"){
-        
+    if (x == "showHitStay") {
+
         playBtn.style.display = 'none';
         hitBtn.style.display = 'block';
         stayBtn.style.display = 'block';
         stayBtn.style.opacity = '1';
         hitBtn.style.opacity = '1';
     }
+    if (x == "disable") {
+        hitBtn.disabled = true;
+        return true;
+    }
+    if (x == "enable") {
+        hitBtn.disabled = false;
+        return false;
+    }
+    if (x == "endGame") {
+
+        playBtn.style.display = 'none';
+        hitBtn.style.display = 'none';
+        stayBtn.style.display = 'none';
+        stayBtn.style.opacity = '0';
+        hitBtn.style.opacity = '0';
+        controls.style.gridTemplateColumns = "auto";
+        playBtn.disabled = false;
+        playBtn.style.display = 'block';
+        playBtn.innerText = "Another Game?"
+
+        setTimeout(function () {
+            playBtn.style.opacity = '1';
+
+        }, 1000)
+
+    }
+    if (x == "dealerTurn") {
+
+        stayBtn.style.opacity = '0';
+        hitBtn.style.opacity = '0';
+        stayBtn.disabled = true;
+    }
 
 }
+//create new card 
+function createCard(target, x, score, hidden = false) {
 
-function createCard(target, x, score){
+    var randomCard = getRand(0, 11);
+    var id = Date.now() + getRand(1, 300);
 
-    var randomCard = getRand(0,11);
-    var id = Date.now() + getRand(1,300);
-    
+
     var card = cards[randomCard];
 
     //create and add card to the page
@@ -79,16 +123,22 @@ function createCard(target, x, score){
     newCard.classList.add(x);
     target.appendChild(newCard);
     document.getElementById(id).classList.toggle('out');
-    document.getElementById(id).style.backgroundImage = 'url(images/fronts/'+card+'.svg)';
-    document.getElementById(id).classList.toggle('margin');
+    document.getElementById(id).style.backgroundImage = 'url(images/fronts/' + card + '.svg)';
 
+    if (hidden) {
+        hiddenCardId = id;
+        document.getElementById(id).classList.toggle('block');
+    }
+
+    document.getElementById(id).classList.toggle('margin');
+    activeCards.push(id);
     //wait for card then toggle class for transition effect
     waitForCard(id).then((elm) => {
-        setTimeout(function (){
+        setTimeout(function () {
             document.getElementById(id).classList.toggle('out');
-            
+
         }, 10)
-        
+
     });
 
     return score += values[randomCard];
@@ -114,51 +164,179 @@ function waitForCard(selector) {
         });
     });
 }
+function clearLastGame() {
 
+    alerts.style.opacity = 0;
+    activeCards.forEach(removeCards);
+    activeCards = [];
+    playerTotal = 0;
+    dealerTotal = 0;
+    playerScore.innerText = '';
+    dealerScore.innerText = '';
+    stayBtn.disabled = false;
 
-function playPoker(){
-    
-    buttonsControl('newGame');
-    setTimeout(function (){
-    dealerTotal = createCard(dealerCardCont,'dealerCard',dealerTotal);
-    },100);
-    setTimeout(function (){
-    dealerTotal = createCard(dealerCardCont,'dealerCard',dealerTotal);
-    console.log(dealerTotal);
-    },200);
-    
-    
-    setTimeout(function (){
-    playerTotal = createCard(playerCardCont,'playerCard',playerTotal);
-    },1500);
-    setTimeout(function (){
-    playerTotal = createCard(playerCardCont,'playerCard',playerTotal);
-    console.log(playerTotal);
-    },1700);
-    setTimeout(function (){
-    checkScore();
-    },3500);
-    
-    
-    setTimeout(function (){
-    buttonsControl('showHitStay');
-    },3500);
-    
 }
-function checkScore(){
-    
-    // if(playerTotal == 21){
-    //     alert("You got black Jack!");
-    //     return;
-    // }
-    // if(playerTotal > 21){
-    //     alert("bust");
-    //     return;
-    // }
-    // if(dealerTotal == 21){
-    //     alert("Dealer Got black Jack!");
-    //     return;
-    // }
+function removeCards(i) {
+
+    var elem = document.getElementById(i);
+    elem.parentNode.removeChild(elem);
+
+
+}
+
+function playBj() {
+
+    clearLastGame();
+    buttonsControl('newGame');
+
+    setTimeout(function () {
+        dealerTotal = createCard(dealerCardCont, 'dealerCard', dealerTotal);
+
+    }, 100);
+    setTimeout(function () {
+        dealerTotal = createCard(dealerCardCont, 'dealerCard', dealerTotal, true);
+
+    }, 200);
+
+
+
+    setTimeout(function () {
+        playerTotal = createCard(playerCardCont, 'playerCard', playerTotal);
+    }, 1500);
+    setTimeout(function () {
+        playerTotal = createCard(playerCardCont, 'playerCard', playerTotal);
+        playerScore.innerText = playerTotal;
+    }, 1700);
+
+
+
+    setTimeout(function () {
+        if (!checkBj()) {
+            setTimeout(function () {
+                buttonsControl('showHitStay');
+            }, 100);
+        }
+    }, 3500);
+
+
+
+
+}
+function updateScore(x) {
+
+    if(x === 'lost'){
+        score.lost ++
+        document.getElementById('lost').innerText = "Lost: " + score.lost;
+    }
+    else if(x === 'win'){
+        score.win++
+        document.getElementById('wins').innerText = "Wins: " + score.win;
+    }
+    else if(x === 'draw'){
+        score.draw ++;
+        document.getElementById('draw').innerText = "Draws: " + score.draw;
+    } else {
+        score.win ++;
+        score.bj ++;
+        document.getElementById('wins').innerText = "Wins: " + score.win;
+        document.getElementById('wins').innerText = "BlackJack: " + score.bj;
+    }
+
+
+}
+function checkScore() {
+
+    if (playerTotal > 21) {
+        alerts.innerText = "Bust!"
+        alerts.style.opacity = 1;
+        updateScore('lost');
+        document.getElementById(hiddenCardId).classList.toggle('block');
+        dealerScore.innerText = dealerTotal;
+        buttonsControl('endGame');
+    } else {
+        buttonsControl('enable');
+    }
+
+}
+function checkBj() {
+
+    if (dealerTotal == 21) {
+        document.getElementById(hiddenCardId).classList.toggle('block');
+        dealerScore.innerText = dealerTotal;
+        alerts.innerText = "Dealer Wins!"
+        updateScore('lost');
+        alerts.style.opacity = 1;
+        buttonsControl('endGame');
+        return true;
+    }
+    if (playerTotal == 21) {
+        alerts.innerText = "$$ BlackJack! You win! $$"
+        updateScore('bj');
+        alerts.style.opacity = 1;
+        buttonsControl('endGame');
+        return true;
+    } else {
+        buttonsControl('enable');
+    }
+}
+function dealerTurn() {
+    buttonsControl('dealerTurn');
+    document.getElementById(hiddenCardId).classList.toggle('block');
+    dealerScore.innerText = dealerTotal;
+
+    var tick = 0;
+    setTimeout(function () {
+        while (dealerTotal < 16) {
+
+            dealerTotal = createCard(dealerCardCont, 'dealerCard', dealerTotal);
+            dealerScore.innerText = dealerTotal;
+            tick++;
+
+        }
+    }, 500);
+        if (tick == 0 && dealerTotal > playerTotal) {
+
+            alerts.innerText = "Dealer wins!"
+            updateScore('lost');
+            alerts.style.opacity = 1;
+            buttonsControl('endGame');
+            return;
+
+        }
+        else if (tick == 0 && dealerTotal == playerTotal) {
+
+            alerts.innerText = " its a Stand Off!"
+            updateScore('draw');
+            alerts.style.opacity = 1;
+            buttonsControl('endGame');
+            return;
+
+        }
+    setTimeout(function () {
+        if (dealerTotal > 21) {
+            alerts.innerText = "Dealer Bust! You Win!!"
+            updateScore('win');
+            alerts.style.opacity = 1;
+        } else if (playerTotal > dealerTotal) {
+            alerts.innerText = "You Win!!"
+            updateScore('win');
+            alerts.style.opacity = 1;
+        }
+        else if (dealerTotal == playerTotal) {
+
+            alerts.innerText = "Push"
+            updateScore('draw');
+            alerts.style.opacity = 1;
+
+        } else {
+
+            alerts.innerText = "Dealer wins!"
+            updateScore('lost');
+            alerts.style.opacity = 1;
+
+        }
+        buttonsControl('endGame');
+    }, 3000);
 
 }
 
@@ -167,11 +345,13 @@ function checkScore(){
 
 
 // Add event listener to generate button
-playBtnStart.addEventListener('click', playPoker);
-hitBtnStart.addEventListener('click', function() { 
-    playerTotal = createCard(playerCardCont,'playerCard',playerTotal); 
-    console.log(playerTotal);
-    setTimeout(function (){
-    checkScore();
-    },500);
+stayBtn.addEventListener('click', dealerTurn);
+playBtnStart.addEventListener('click', playBj);
+hitBtnStart.addEventListener('click', function () {
+    buttonsControl('disable');
+    playerTotal = createCard(playerCardCont, 'playerCard', playerTotal);
+    playerScore.innerText = playerTotal;
+    setTimeout(function () {
+        checkScore();
+    }, 1400);
 });
