@@ -16,7 +16,8 @@ var hiddenCardId = 0;
 var score = {
     win: 0,
     lost: 0,
-    draw: 0
+    draw: 0,
+    bj: 0
 }
 
 const cards = [
