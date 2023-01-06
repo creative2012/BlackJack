@@ -319,7 +319,7 @@ function updateScore(x) {
         score.win ++;
         score.bj ++;
         document.getElementById('wins').innerText = "Wins: " + score.win;
-        document.getElementById('wins').innerText = "BlackJack: " + score.bj;
+        document.getElementById('bj').innerText = "BlackJack: " + score.bj;
     }
 
 
